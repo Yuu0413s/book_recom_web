@@ -1,69 +1,84 @@
-# React + TypeScript + Vite
+# 小説検索&推薦システム
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+「小説家になろう」で公開されているWEB小説を検索・推薦するWebアプリケーションです。
 
-Currently, two official plugins are available:
+## 機能
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 絞り込み検索
+- キーワードでタイトル・あらすじを部分一致検索
+- 作者名での検索
+- 複合条件検索（キーワード + 作者名）
 
-## Expanding the ESLint configuration
+### 作品推薦（類似度検索）
+- 複数のキーワードを入力すると、関連性の高い小説を推薦
+- 類似度スコア（0-100%）を表示
+- TOP10の推奨作品を提示
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 技術スタック
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| カテゴリ | 技術 |
+|---------|------|
+| フレームワーク | React 19 |
+| 言語 | TypeScript |
+| ビルドツール | Vite |
+| UIライブラリ | Yamada UI |
+| API | 小説家になろう API |
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## セットアップ
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 必要条件
+- Node.js 18以上
+
+### インストール
+
+```bash
+# リポジトリをクローン
+git clone https://github.com/Yuu0413s/OC_2025.git
+cd book_recom_web
+
+# 依存関係をインストール
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 開発サーバーの起動
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+ブラウザで http://localhost:5173 を開いてアプリケーションにアクセスできます。
+
+## スクリプト
+
+| コマンド | 説明 |
+|---------|------|
+| `npm run dev` | 開発サーバーを起動 |
+| `npm run build` | 本番用ビルドを作成 |
+| `npm run preview` | 本番ビルドをプレビュー |
+| `npm run lint` | ESLintでコードをチェック |
+
+## プロジェクト構成
+
+```
+src/
+├── components/
+│   ├── SearchForm.tsx   # 検索フォーム（タブUI）
+│   └── NovelList.tsx    # 検索結果リスト
+├── types/
+│   └── novel.ts         # 型定義
+├── App.tsx              # メインアプリケーション
+├── main.tsx             # エントリーポイント
+└── index.css            # グローバルスタイル
+```
+
+## API
+
+このアプリケーションは[小説家になろう API](https://dev.syosetu.com/man/api/)を使用しています。
+
+- エンドポイント: `https://api.syosetu.com/novelapi/api/`
+- 取得項目: ncode（小説ID）、title、writer、story
+- 取得上限: 200件
+
+## ライセンス
+
+Private
