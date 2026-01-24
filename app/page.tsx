@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { UIProvider, Container, VStack, Heading, Center, Text, Loading, HStack } from "@yamada-ui/react";
+import { Container, VStack, Heading, Center, Text, Loading, HStack } from "@yamada-ui/react";
 import { SearchForm } from "./components/SearchForm";
 import { NovelList } from "./components/NovelList";
 import type { Novel, NarouApiResponse, NovelWithScore } from './types/novel';
@@ -11,7 +13,7 @@ interface FilterCriteria {
     author: string;
 }
 
-function App() {
+export default function Home() {
     const [allNovels, setAllNovels] = useState<Novel[]>([]);
     const [displayedNovels, setDisplayedNovels] = useState<NovelWithScore[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -95,11 +97,10 @@ function App() {
     };
 
     return (
-    <UIProvider>
         <Container maxW="full" px="lg" py="lg">
-            <VStack spacing="lg">
+            <VStack gap="lg">
                 <Heading>小説検索&推薦</Heading>
-                <HStack spacing="lg" align="start" w="full">
+                <HStack gap="lg" align="start" w="full">
                     <VStack w="30%" minW="300px" position="sticky" top="lg">
                         <SearchForm
                             onFilterSearch={handleFilterSearch}
@@ -115,8 +116,5 @@ function App() {
                 </HStack>
             </VStack>
         </Container>
-    </UIProvider>
     );
 }
-
-export default App;
