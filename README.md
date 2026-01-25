@@ -33,7 +33,7 @@
 
 ```bash
 # リポジトリをクローン
-git clone https://github.com/Yuu0413s/OC_2025.git
+git clone https://github.com/Yuu0413s/book_recom_web.git
 cd book_recom_web
 
 # 依存関係をインストール
