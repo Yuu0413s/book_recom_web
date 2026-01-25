@@ -4,13 +4,16 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@prisma/client": "^7.3.0",
     "@yamada-ui/react": "^1.7.8",
     "next": "^15.3.4",
+    "prisma": "^7.3.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
