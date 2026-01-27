@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { syncNovelsFromApi } from '@/lib/narou-api';
+import { syncAllSources } from '@/lib/sync/book-sync';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Vercel Hobby: 10s, Pro: 60s
 
 /**
- * Cron Job: 1時間ごとになろうAPIから小説データを取得しDBに保存
+ * Cron Job: 定期的に全APIソースからデータを取得しDBに保存
  *
  * Vercel Cronから呼び出される。外部からの不正アクセス防止のため
  * CRON_SECRET による認証ガードを実装。
@@ -25,34 +25,39 @@ export async function GET(request: NextRequest) {
 
   if (authHeader !== `Bearer ${cronSecret}`) {
     console.warn('Unauthorized cron access attempt');
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  // 小説データの同期処理
-  console.log('Starting novel sync from Narou API...');
-  const result = await syncNovelsFromApi();
+  // 全ソースのデータ同期処理
+  console.log('Starting multi-source book sync...');
+  const result = await syncAllSources();
 
   if (result.success) {
-    console.log(result.message);
+    console.log(
+      `Sync completed: ${result.totalCreated} created, ${result.totalUpdated} updated in ${result.duration}ms`
+    );
     return NextResponse.json({
       success: true,
-      message: result.message,
-      created: result.created,
-      updated: result.updated,
+      message: `Synced all sources: ${result.totalCreated} created, ${result.totalUpdated} updated`,
+      results: result.results,
+      duration: result.duration,
       timestamp: new Date().toISOString(),
     });
   } else {
-    console.error(result.message);
+    const failedSources = result.results
+      .filter((r) => !r.success)
+      .map((r) => r.source);
+
+    console.error(`Sync partially failed. Failed sources: ${failedSources.join(', ')}`);
     return NextResponse.json(
       {
         success: false,
-        error: result.message,
+        message: `Partial sync failure. Failed: ${failedSources.join(', ')}`,
+        results: result.results,
+        duration: result.duration,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 }
+      { status: 207 } // Multi-Status
     );
   }
 }

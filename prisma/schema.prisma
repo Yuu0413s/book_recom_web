@@ -11,6 +11,56 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING") // Direct connection for migrations
 }
 
+// データソースの種類
+enum DataSource {
+  NAROU
+  GOOGLE_BOOKS
+  OPEN_LIBRARY
+  AOZORA
+  CINII
+}
+
+// 同期ステータス
+enum SyncStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+  PARTIAL
+}
+
+// 統一Bookモデル（全ソース共通）
+model Book {
+  id          Int        @id @default(autoincrement())
+  source      DataSource // データソース
+  sourceId    String     // ソース固有のユニークID
+  title       String     // タイトル
+  author      String?    // 著者名（複数の場合はカンマ区切り）
+  description String?    @db.Text // あらすじ・説明
+  url         String?    // 元ソースへのリンク
+  metadata    Json?      // ソース固有の追加データ
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([source, sourceId])
+  @@index([source])
+  @@index([author])
+  @@index([title])
+}
+
+// 同期ログ（監視用）
+model SyncLog {
+  id        Int        @id @default(autoincrement())
+  source    DataSource
+  status    SyncStatus
+  created   Int        @default(0)
+  updated   Int        @default(0)
+  errors    String?    @db.Text
+  startedAt DateTime
+  endedAt   DateTime?
+  createdAt DateTime   @default(now())
+}
+
+// 旧Novelモデル（後方互換性のため一時保持）
 model Novel {
   id        Int      @id @default(autoincrement())
   ncode     String   @unique // 小説コード（なろうAPIのユニークID）
