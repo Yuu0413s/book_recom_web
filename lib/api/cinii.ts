@@ -6,7 +6,7 @@ import type { CiNiiResponse, SyncResult } from '@/app/types/book';
 
 const CINII_API_BASE = 'https://ci.nii.ac.jp/books/opensearch/search';
 const SEARCH_KEYWORDS = ['小説', 'ファンタジー', 'SF', '恋愛'];
-const COUNT = 200;
+const COUNT = 25; // 25件 × 4キーワード = 100件
 
 export async function fetchCiNiiBooks(keyword: string): Promise<CiNiiResponse> {
   const url = `${CINII_API_BASE}?q=${encodeURIComponent(keyword)}&format=json&count=${COUNT}`;

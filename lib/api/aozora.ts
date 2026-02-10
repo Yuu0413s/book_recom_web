@@ -22,7 +22,7 @@ export async function syncAozoraToBooks(): Promise<SyncResult> {
   const errors: string[] = [];
   let after: string | undefined;
   let pageCount = 0;
-  const maxPages = 4; // 1回の同期で最大200件 (50 * 4)
+  const maxPages = 2; // 1回の同期で最大100件 (50 * 2)
 
   try {
     while (pageCount < maxPages) {

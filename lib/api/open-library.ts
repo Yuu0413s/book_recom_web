@@ -11,7 +11,7 @@ const SEARCH_KEYWORDS = [
   'science fiction',
   'romance',
 ];
-const LIMIT = 200;
+const LIMIT = 25; // 25件 × 4キーワード = 100件
 
 export async function fetchOpenLibraryBooks(
   keyword: string

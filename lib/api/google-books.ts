@@ -6,7 +6,7 @@ import type { GoogleBooksResponse, SyncResult } from '@/app/types/book';
 
 const GOOGLE_BOOKS_BASE = 'https://www.googleapis.com/books/v1/volumes';
 const SEARCH_KEYWORDS = ['小説', 'ファンタジー', 'SF', '恋愛', 'ミステリー'];
-const MAX_RESULTS = 40;
+const MAX_RESULTS = 20; // 20件 × 5キーワード = 100件
 
 export async function fetchGoogleBooks(
   keyword: string
