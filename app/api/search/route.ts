@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { generateEmbedding } from '@/lib/openai';
+import { generateEmbedding } from '@/lib/gemini';
 
 export const dynamic = 'force-dynamic';
 
 /**
  * セマンティック検索API
- * OpenAI Embeddingsを使用して意味的な類似度で書籍を検索
+ * Gemini Embeddingsを使用して意味的な類似度で書籍を検索
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;

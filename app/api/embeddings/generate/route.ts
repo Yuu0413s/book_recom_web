@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { generateEmbedding, createBookEmbeddingText } from '@/lib/openai';
+import { generateEmbedding, createBookEmbeddingText } from '@/lib/gemini';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300; // 5 minutes
@@ -32,7 +32,7 @@ export async function POST() {
     let processed = 0;
     let errors = 0;
 
-    // バッチ処理（OpenAI APIのレート制限を考慮）
+    // バッチ処理（Gemini APIのレート制限を考慮）
     for (const book of books) {
       try {
         const embeddingText = createBookEmbeddingText(book);

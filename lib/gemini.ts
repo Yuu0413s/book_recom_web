@@ -1,22 +1,18 @@
-import OpenAI from 'openai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// OpenAI クライアントの初期化
-export const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Gemini クライアントの初期化
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 /**
  * テキストをembeddingに変換
  * @param text - 変換するテキスト
- * @returns 1536次元のembeddingベクトル
+ * @returns 768次元のembeddingベクトル
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const response = await openai.embeddings.create({
-    model: 'text-embedding-3-small',
-    input: text,
-  });
+  const model = genAI.getGenerativeModel({ model: 'text-embedding-004' });
 
-  return response.data[0].embedding;
+  const result = await model.embedContent(text);
+  return result.embedding.values;
 }
 
 /**

@@ -38,7 +38,7 @@ model Book {
   description String?                       @db.Text // あらすじ・説明
   url         String?                       // 元ソースへのリンク
   metadata    Json?                         // ソース固有の追加データ
-  embedding   Unsupported("vector(1536)")?  // OpenAI embeddings (text-embedding-3-small)
+  embedding   Unsupported("vector(768)")?   // Gemini embeddings (text-embedding-004)
   createdAt   DateTime                      @default(now())
   updatedAt   DateTime                      @updatedAt
 

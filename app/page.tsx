@@ -91,7 +91,7 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      // LLM（OpenAI Embeddings）を使用したセマンティック検索
+      // LLM（Gemini Embeddings）を使用したセマンティック検索
       const response = await fetch(
         `/api/search?q=${encodeURIComponent(query)}&limit=20`
       );
