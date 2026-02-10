@@ -36,9 +36,15 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error fetching books:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch books' },
-      { status: 500 }
-    );
+
+    // より詳細なエラー情報を返す
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorDetails = {
+      error: 'Failed to fetch books',
+      message: errorMessage,
+      hint: 'データベース接続を確認してください。Vercelの環境変数(POSTGRES_PRISMA_URL)が設定されているか確認してください。'
+    };
+
+    return NextResponse.json(errorDetails, { status: 500 });
   }
 }
