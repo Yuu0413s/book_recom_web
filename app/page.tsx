@@ -82,39 +82,34 @@ export default function Home() {
     setDisplayedBooks(filteredBooks);
   };
 
-  const handleSimilaritySearch = (query: string) => {
+  const handleSimilaritySearch = async (query: string) => {
     if (!query.trim()) {
       setDisplayedBooks(allBooks);
       return;
     }
 
-    const queryChars = [
-      ...new Set(query.toLowerCase().replace(/\s/g, '').split('')),
-    ];
+    setIsLoading(true);
 
-    const scoredBooks: BookWithScore[] = allBooks.map((book) => {
-      const title = (book.title || '').toLowerCase();
-      let matchCount = 0;
+    try {
+      // LLM（OpenAI Embeddings）を使用したセマンティック検索
+      const response = await fetch(
+        `/api/search?q=${encodeURIComponent(query)}&limit=20`
+      );
 
-      if (title) {
-        for (const char of queryChars) {
-          if (title.includes(char)) {
-            matchCount++;
-          }
-        }
+      if (!response.ok) {
+        throw new Error(`検索エラー: ${response.status}`);
       }
 
-      const score = queryChars.length > 0 ? matchCount / queryChars.length : 0;
-
-      return { ...book, score };
-    });
-
-    const topBooks = scoredBooks
-      .filter((book) => (book.score ?? 0) > 0)
-      .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
-      .slice(0, 10);
-
-    setDisplayedBooks(topBooks);
+      const data = await response.json();
+      setDisplayedBooks(data.books || []);
+    } catch (err) {
+      console.error('Semantic search error:', err);
+      setError(
+        err instanceof Error ? err : new Error('検索中にエラーが発生しました')
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

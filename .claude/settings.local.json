@@ -9,7 +9,8 @@
       "Bash(npm update:*)",
       "Bash(git add:*)",
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: Improve database error handling and logging\n\n- Add detailed error messages in /api/books endpoint\n- Add database connection logging in Prisma client\n- Provide hints for debugging database connection issues\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npm install:*)"
     ]
   }
 }

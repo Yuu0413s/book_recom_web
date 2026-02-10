@@ -30,16 +30,17 @@ enum SyncStatus {
 
 // 統一Bookモデル（全ソース共通）
 model Book {
-  id          Int        @id @default(autoincrement())
-  source      DataSource // データソース
-  sourceId    String     // ソース固有のユニークID
-  title       String     // タイトル
-  author      String?    // 著者名（複数の場合はカンマ区切り）
-  description String?    @db.Text // あらすじ・説明
-  url         String?    // 元ソースへのリンク
-  metadata    Json?      // ソース固有の追加データ
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  id          Int                           @id @default(autoincrement())
+  source      DataSource                    // データソース
+  sourceId    String                        // ソース固有のユニークID
+  title       String                        // タイトル
+  author      String?                       // 著者名（複数の場合はカンマ区切り）
+  description String?                       @db.Text // あらすじ・説明
+  url         String?                       // 元ソースへのリンク
+  metadata    Json?                         // ソース固有の追加データ
+  embedding   Unsupported("vector(1536)")?  // OpenAI embeddings (text-embedding-3-small)
+  createdAt   DateTime                      @default(now())
+  updatedAt   DateTime                      @updatedAt
 
   @@unique([source, sourceId])
   @@index([source])
