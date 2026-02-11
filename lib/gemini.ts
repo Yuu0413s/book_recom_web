@@ -9,7 +9,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
  * @returns 768次元のembeddingベクトル
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const model = genAI.getGenerativeModel({ model: 'embedding-001' });
+  const model = genAI.getGenerativeModel({ model: 'models/text-embedding-004' });
 
   const result = await model.embedContent(text);
   return result.embedding.values;
