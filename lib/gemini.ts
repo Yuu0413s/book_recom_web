@@ -1,18 +1,37 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-// Gemini クライアントの初期化
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-
 /**
- * テキストをembeddingに変換
+ * テキストをembeddingに変換（REST API直接使用）
  * @param text - 変換するテキスト
  * @returns 768次元のembeddingベクトル
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-  const model = genAI.getGenerativeModel({ model: 'text-embedding-005' });
+  const apiKey = process.env.GEMINI_API_KEY;
 
-  const result = await model.embedContent(text);
-  return result.embedding.values;
+  if (!apiKey) {
+    throw new Error('GEMINI_API_KEY is not set');
+  }
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/text-embedding-004:embedContent?key=${apiKey}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: {
+          parts: [{ text }],
+        },
+      }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+  }
+
+  const data = await response.json();
+  return data.embedding.values;
 }
 
 /**
