@@ -10,7 +10,7 @@ export const maxDuration = 300; // 5 minutes
  *
  * このエンドポイントは一時的なもので、初回のembedding生成後は削除してください
  */
-export async function POST() {
+async function generateEmbeddings() {
   try {
     // embedding が null の書籍を取得
     const books = await prisma.book.findMany({
@@ -79,4 +79,14 @@ export async function POST() {
       { status: 500 }
     );
   }
+}
+
+// POSTメソッド
+export async function POST() {
+  return generateEmbeddings();
+}
+
+// GETメソッド（ブラウザから直接アクセス可能）
+export async function GET() {
+  return generateEmbeddings();
 }
