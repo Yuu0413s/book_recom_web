@@ -1,1 +1,9 @@
 /*グローバルCSS*/
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f9fafb;
+}

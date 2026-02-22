@@ -113,24 +113,37 @@ export default function Home() {
   };
 
   return (
-    <Container maxW="full" px="lg" py="lg">
-      <VStack gap="lg">
-        <Heading>書籍検索&推薦</Heading>
-        <HStack gap="lg" align="start" w="full">
-          <VStack w="30%" minW="300px" position="sticky" top="lg">
+    <Container maxW="full" px={{ base: 'md', md: 'lg' }} py="lg">
+      <VStack gap="xl">
+        <VStack gap={2} textAlign="center">
+          <Heading size="2xl">📚 書籍検索 &amp; 推薦</Heading>
+          <Text color="gray.500" fontSize="md">
+            キーワード検索や AI によるセマンティック検索で、あなたにぴったりの本を見つけよう
+          </Text>
+        </VStack>
+
+        <HStack gap="xl" align="start" w="full" flexDir={{ base: 'column', md: 'row' }}>
+          <VStack w={{ base: 'full', md: '30%' }} minW={{ md: '280px' }} position={{ md: 'sticky' }} top="lg">
             <SearchForm
               onFilterSearch={handleFilterSearch}
               onSimilaritySearch={handleSimilaritySearch}
             />
           </VStack>
 
-          <VStack w="70%">
+          <VStack w={{ base: 'full', md: '70%' }}>
             {isLoading && (
-              <Center>
-                <Loading />
+              <Center py="2xl">
+                <VStack gap={3}>
+                  <Loading fontSize="xl" />
+                  <Text color="gray.400" fontSize="sm">読み込み中...</Text>
+                </VStack>
               </Center>
             )}
-            {error && <Text color="red.500">{error.message}</Text>}
+            {error && (
+              <Text color="red.500" p={4} bg="red.50" rounded="md" w="full">
+                ⚠️ {error.message}
+              </Text>
+            )}
             {!isLoading && <NovelList books={displayedBooks} />}
           </VStack>
         </HStack>
