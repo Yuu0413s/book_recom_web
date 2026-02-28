@@ -22,9 +22,10 @@ import {
 interface Props {
   onFilterSearch: (criteria: { query: string; author: string }) => void;
   onSimilaritySearch: (query: string) => void;
+  onReset: () => void;
 }
 
-export const SearchForm = ({ onFilterSearch, onSimilaritySearch }: Props) => {
+export const SearchForm = ({ onFilterSearch, onSimilaritySearch, onReset }: Props) => {
   const [filterQuery, setFilterQuery] = useState('');
   const [author, setAuthor] = useState('');
   const [similarityQuery, setSimilarityQuery] = useState('');
@@ -37,12 +38,21 @@ export const SearchForm = ({ onFilterSearch, onSimilaritySearch }: Props) => {
   const handleFilterReset = () => {
     setFilterQuery('');
     setAuthor('');
-    onFilterSearch({ query: '', author: '' });
+    onReset();
   };
 
   const handleSimilaritySubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!similarityQuery.trim()) {
+      onReset();
+      return;
+    }
     onSimilaritySearch(similarityQuery);
+  };
+
+  const handleSimilarityReset = () => {
+    setSimilarityQuery('');
+    onReset();
   };
 
   return (
@@ -141,9 +151,19 @@ export const SearchForm = ({ onFilterSearch, onSimilaritySearch }: Props) => {
                     />
                   </FormControl>
 
-                  <Button type="submit" colorScheme="secondary" w="full">
-                    おすすめ作品を表示
-                  </Button>
+                  <HStack w="full" gap={2}>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      flex={1}
+                      onClick={handleSimilarityReset}
+                    >
+                      リストに戻る
+                    </Button>
+                    <Button type="submit" colorScheme="secondary" flex={2}>
+                      おすすめ作品を表示
+                    </Button>
+                  </HStack>
                 </VStack>
               </form>
             </TabPanel>

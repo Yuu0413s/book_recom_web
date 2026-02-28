@@ -9,10 +9,11 @@ import {
   Text,
   Loading,
   HStack,
+  Button,
 } from '@yamada-ui/react';
 import { SearchForm } from './components/SearchForm';
 import { NovelList } from './components/NovelList';
-import type { Book, BookWithScore } from './types/book';
+import type { Book, BookWithScore, DataSource } from './types/book';
 
 interface FilterCriteria {
   query: string;
@@ -29,9 +30,19 @@ interface BooksApiResponse {
   };
 }
 
+const SOURCE_TABS: { key: 'ALL' | DataSource; label: string }[] = [
+  { key: 'ALL', label: 'すべて' },
+  { key: 'NAROU', label: 'なろう' },
+  { key: 'GOOGLE_BOOKS', label: 'Google Books' },
+  { key: 'OPEN_LIBRARY', label: 'Open Library' },
+  { key: 'AOZORA', label: '青空文庫' },
+  { key: 'CINII', label: 'CiNii' },
+];
+
 export default function Home() {
   const [allBooks, setAllBooks] = useState<Book[]>([]);
   const [displayedBooks, setDisplayedBooks] = useState<BookWithScore[]>([]);
+  const [selectedSource, setSelectedSource] = useState<'ALL' | DataSource>('ALL');
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
 
@@ -82,6 +93,10 @@ export default function Home() {
     setDisplayedBooks(filteredBooks);
   };
 
+  const handleReset = () => {
+    setDisplayedBooks(allBooks);
+  };
+
   const handleSimilaritySearch = async (query: string) => {
     if (!query.trim()) {
       setDisplayedBooks(allBooks);
@@ -91,7 +106,6 @@ export default function Home() {
     setIsLoading(true);
 
     try {
-      // LLM（Gemini Embeddings）を使用したセマンティック検索
       const response = await fetch(
         `/api/search?q=${encodeURIComponent(query)}&limit=20`
       );
@@ -112,6 +126,11 @@ export default function Home() {
     }
   };
 
+  const visibleBooks =
+    selectedSource === 'ALL'
+      ? displayedBooks
+      : displayedBooks.filter((b) => b.source === selectedSource);
+
   return (
     <Container maxW="full" px={{ base: 'md', md: 'lg' }} py="lg">
       <VStack gap="xl">
@@ -127,10 +146,31 @@ export default function Home() {
             <SearchForm
               onFilterSearch={handleFilterSearch}
               onSimilaritySearch={handleSimilaritySearch}
+              onReset={handleReset}
             />
           </VStack>
 
-          <VStack w={{ base: 'full', md: '70%' }}>
+          <VStack w={{ base: 'full', md: '70%' }} gap={4}>
+            <HStack gap={2} flexWrap="wrap" w="full">
+              {SOURCE_TABS.map(({ key, label }) => {
+                const count =
+                  key === 'ALL'
+                    ? displayedBooks.length
+                    : displayedBooks.filter((b) => b.source === key).length;
+                return (
+                  <Button
+                    key={key}
+                    size="sm"
+                    variant={selectedSource === key ? 'solid' : 'outline'}
+                    colorScheme={selectedSource === key ? 'primary' : 'gray'}
+                    onClick={() => setSelectedSource(key)}
+                  >
+                    {label} ({count})
+                  </Button>
+                );
+              })}
+            </HStack>
+
             {isLoading && (
               <Center py="2xl">
                 <VStack gap={3}>
@@ -144,7 +184,7 @@ export default function Home() {
                 ⚠️ {error.message}
               </Text>
             )}
-            {!isLoading && <NovelList books={displayedBooks} />}
+            {!isLoading && <NovelList books={visibleBooks} />}
           </VStack>
         </HStack>
       </VStack>
