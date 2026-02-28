@@ -1,0 +1,16 @@
+name = "book-recom-api"
+main = "src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "book-recom-db"
+database_id = "6ede85c5-82ba-4063-b3d1-b1b10af4a986"
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "book-embeddings"
+
+[triggers]
+crons = ["0 * * * *"]
