@@ -51,3 +51,6 @@ env
 # Claude Code
 .claude/*.local.*
 .claude/settings.local.json
+
+# Cloudflare local secrets
+workers/.dev.vars
