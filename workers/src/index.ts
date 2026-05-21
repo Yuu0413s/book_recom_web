@@ -5,6 +5,7 @@ import { searchRoute } from './routes/search';
 import { embeddingsRoute } from './routes/embeddings';
 import { syncRoute } from './routes/sync';
 import { syncAllSources } from './sync/book-sync';
+import { generateEmbeddingBatch } from './lib/embedding-cron';
 
 export type Env = {
   DB: D1Database;
@@ -39,6 +40,11 @@ app.get('/', (c) => c.json({ status: 'ok', service: 'book-recom-api' }));
 export default {
   fetch: app.fetch,
   async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext) {
-    ctx.waitUntil(syncAllSources(env));
+    ctx.waitUntil(
+      Promise.all([
+        syncAllSources(env),
+        generateEmbeddingBatch(env),
+      ])
+    );
   },
 };

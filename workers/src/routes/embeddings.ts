@@ -16,6 +16,7 @@ async function processBatch(env: Env, books: BookRow[]) {
       const text = createBookEmbeddingText(book);
       const embedding = await generateEmbedding(text, env.GEMINI_API_KEY);
       await upsertVector(env.VECTORIZE, String(book.id), embedding);
+      await env.DB.prepare('UPDATE books SET has_embedding = 1 WHERE id = ?').bind(book.id).run();
       processed++;
       // 100 QPM 制限対応: 700ms 間隔 ≒ 85 QPM
       await new Promise((r) => setTimeout(r, 700));
