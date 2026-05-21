@@ -15,7 +15,7 @@ import {
 import { NovelList } from './components/NovelList';
 import type { Book, BookWithScore, DataSource } from './types/book';
 
-const API_BASE = import.meta.env.VITE_API_URL ?? '';
+const API_BASE = import.meta.env.VITE_API_URL ?? 'https://book-recom-api.y-shibata0820.workers.dev';
 
 interface BooksApiResponse {
   books: Book[];
