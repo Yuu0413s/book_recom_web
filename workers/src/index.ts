@@ -23,6 +23,7 @@ app.use(
       if (!origin) return '*';
       if (origin.startsWith('http://localhost:')) return origin;
       if (origin.endsWith('.pages.dev')) return origin;
+      if (origin.endsWith('.workers.dev')) return origin;
       return null;
     },
     allowMethods: ['GET', 'POST', 'OPTIONS'],
